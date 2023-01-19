@@ -3,6 +3,9 @@
 #include "TallyTankardGameMode.h"
 #include "TallyTankardCharacter.h"
 #include "UObject/ConstructorHelpers.h"
+#include "SongComponent.h"
+
+
 
 ATallyTankardGameMode::ATallyTankardGameMode()
 {

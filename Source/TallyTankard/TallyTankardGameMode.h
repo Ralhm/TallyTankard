@@ -6,14 +6,27 @@
 #include "GameFramework/GameModeBase.h"
 #include "TallyTankardGameMode.generated.h"
 
-UCLASS(minimalapi)
+
+UCLASS()
 class ATallyTankardGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
 public:
 	ATallyTankardGameMode();
+
+public:
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class USongComponent* CurrentSong;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<class USongComponent*> SongStorage;
+	
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float CurrentBPM;
+
+
 };
-
-
-
