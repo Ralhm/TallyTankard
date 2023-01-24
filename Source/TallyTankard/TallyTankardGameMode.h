@@ -53,17 +53,6 @@ public:
 
 public:
 
-
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class USongComponent* Song1;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		class USongComponent* Song2;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		class USongComponent* Song3;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TArray<class USongComponent*> SongStorage;
 	
@@ -94,6 +83,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool inBeat;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		FString GyroString;
+
 	UPROPERTY(BlueprintReadWrite)
 		FCountDownType TimeManager;
 
@@ -108,5 +100,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void BeginCountDown(FName Type);
+
+	UFUNCTION(BlueprintCallable)
+		void ParseGyroString();
 
 };

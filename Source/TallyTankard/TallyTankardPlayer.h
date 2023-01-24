@@ -32,9 +32,37 @@ public:
 
 	int Score;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int Gx;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int Gy;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int Gz;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int GravitySum;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		FString GyroString;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		FString NewGyroString;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		TArray<int> GravityArray;
+
+	UFUNCTION(BlueprintCallable)
+		void ParseGyroString();
+
+	UFUNCTION(BlueprintCallable)
+		void CalculateGravity(FString gyro);
+
+	UFUNCTION(BlueprintCallable) //Check and compare the values in the GravityArray
+		bool CheckRaise();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		class ATallyTankardGameMode* GameMode;
 
 };

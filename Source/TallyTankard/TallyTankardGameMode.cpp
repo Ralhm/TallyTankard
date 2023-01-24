@@ -9,11 +9,17 @@
 
 ATallyTankardGameMode::ATallyTankardGameMode()
 {
-	Song1 = CreateEditorOnlyDefaultSubobject<USongComponent>(TEXT("Song1"));
-	Song2 = CreateEditorOnlyDefaultSubobject<USongComponent>(TEXT("Song2"));
-	Song3 = CreateEditorOnlyDefaultSubobject<USongComponent>(TEXT("Song3"));
+
 }
 
+
+void ATallyTankardGameMode::ParseGyroString() {
+	for (int i = 0; i < GyroString.Len(); i++) {
+		if (GyroString[i] == '\n') {
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, TEXT("Newline Found!"));
+		}
+	}
+}
 
 
 void ATallyTankardGameMode::AdvanceBeatTimer() {
