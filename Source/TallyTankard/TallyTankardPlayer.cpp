@@ -45,24 +45,51 @@ void ATallyTankardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInput
 void ATallyTankardPlayer::ParseGyroString() {
 	//NewGyroString.TrimStart();
 	GravityArray.Empty();
-	int j = 0;
+	GyroArray.Empty();
+	numLines = 0;
 	NewGyroString = "";
 	for (int i = 0; i < GyroString.Len(); i++) {
 		
 		NewGyroString.AppendChar(GyroString[i]);
 		if (GyroString[i] == '\n') {
 			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Hit a newline!"));
-			j++;
-			CalculateGravity(NewGyroString);
+			GyroArray.Add(NewGyroString);
+			numLines++;
+			linesIndex.Add(i);
+
+			//CalculateGravity(NewGyroString);
 			NewGyroString = "";
+
+
+
+			/*
 			if (j == 4) { //I only care about the most recent readings, so if there are more than 4, just break at 4
 				break;
 			}
+			*/
+
 			
 
 			
 		}
 	}
+	
+	//CalculateGravity(GyroArray[0]);
+	
+	int j = 0;
+	for (int i = GyroArray.Num() - 1; i >= 0; i--) {
+		CalculateGravity(GyroArray[i]);
+		j++;
+		if (j == 4) {
+			break;
+		}
+	}
+	
+
+	
+
+
+
 }
 
 void ATallyTankardPlayer::CalculateGravity(FString gyro) {
@@ -96,33 +123,49 @@ void ATallyTankardPlayer::CalculateGravity(FString gyro) {
 }
 
 bool ATallyTankardPlayer::CheckRaise() {
-	bool heldStill;
-	if (GravityArray.Num() == 0) {
+	bool heldStill = false;
+	if (GravityArray.Num() == 0) { //failsafe
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Hit Failsafe 0!"));
 		return false;
 	}
-	if (GravityArray.Num() == 1) { //failsafe in case we only have one or 2 queued up
+	else if (GravityArray.Num() == 1) { //failsafe in case we only have one queued up
 		if (GravityArray[0] > 1500) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange, TEXT("Hit Failsafe 1!"));
 			return true;
 		}
 	}
-	else if (GravityArray.Num() == 2) { //failsafe in case we only have one or 2 queued up
+	else if (GravityArray.Num() == 2) { //failsafe in case we only have 2 queued up
 		if (GravityArray[0] > 1500 || GravityArray[1] > 1500) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Hit Failsafe 2!"));
 			return true;
 		}
 	}
-
-	for (int i = 1; i < GravityArray.Num(); i++) { //Check if the player has held the tankard still in recent seconds
-		if (GravityArray[i] < 2000) {
-			heldStill = true;
-			break;
+	else {
+		for (int i = 1; i < GravityArray.Num() - 1; i++) { //Check if the player has held the tankard still in recent seconds
+			if (GravityArray[i] < 2000) {
+				heldStill = true;
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Turquoise, TEXT("Held Still Found!"));
+				break;
+			}
 		}
-	}
-	if (heldStill) {
-		if (GravityArray[0] > 1500 || GravityArray[1] > 1500) { //if 2 of the most recent checks are high then return true 
-			return true;
+		if (heldStill) {
+			if (GravityArray[0] > 1500 || GravityArray[1] > 1500) { //if 2 of the most recent checks are high then return true 
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Raise Successfull!"));
+				return true;
+			}
+			else {
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange, TEXT("Failed to Raise Properly!"));
+				return false;
+			}
 		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Failed to Hold Still!"));
+			return false;
+		}
+
 	}
 
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Final False!"));
 	return false;
 }
 
@@ -139,8 +182,15 @@ void ATallyTankardPlayer::SlamTankard() {
 
 void ATallyTankardPlayer::RaiseTankard() {
 	if (GameMode->inBeat) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Good!"));
-		Score += 1;
+		if (CheckRaise()) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Good!"));
+			Score += 1;
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange, TEXT("Miss!"));
+		}
+
+		
 
 		
 

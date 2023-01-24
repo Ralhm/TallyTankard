@@ -26,11 +26,21 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(BlueprintCallable)
 	void SlamTankard();
 
+	UFUNCTION(BlueprintCallable)
 	void RaiseTankard();
 
 	int Score;
+
+	int numLines;
+
+	//Let this be the location of the end of each line on the string. Loop backwards from this to get the most recent gyro lines
+	TArray<int> linesIndex;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TArray<FString> GyroArray;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		int Gx;
