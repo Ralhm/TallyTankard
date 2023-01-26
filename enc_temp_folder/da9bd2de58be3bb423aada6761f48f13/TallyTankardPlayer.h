@@ -30,7 +30,7 @@ public:
 	void SlamTankard();
 
 	UFUNCTION(BlueprintCallable)
-	bool RaiseTankard();
+	void RaiseTankard();
 
 	int Score;
 

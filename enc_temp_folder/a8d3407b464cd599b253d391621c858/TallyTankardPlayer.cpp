@@ -39,7 +39,7 @@ void ATallyTankardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction("Slam", IE_Pressed, this, &ATallyTankardPlayer::SlamTankard);
-	//PlayerInputComponent->BindAction("Raise", IE_Pressed, this, &ATallyTankardPlayer::RaiseTankard);
+	PlayerInputComponent->BindAction("Raise", IE_Pressed, this, &ATallyTankardPlayer::RaiseTankard);
 }
 
 void ATallyTankardPlayer::ParseGyroString() {
@@ -180,7 +180,7 @@ void ATallyTankardPlayer::SlamTankard() {
 	}
 }
 
-bool ATallyTankardPlayer::RaiseTankard() {
+void ATallyTankardPlayer::RaiseTankard() {
 	if (GameMode->inBeat) {
 		if (CheckRaise()) {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Good!"));
