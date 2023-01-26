@@ -38,8 +38,8 @@ void ATallyTankardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInput
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("Slam", IE_Pressed, this, &ATallyTankardPlayer::SlamTankard);
-	//PlayerInputComponent->BindAction("Raise", IE_Pressed, this, &ATallyTankardPlayer::RaiseTankard);
+	//PlayerInputComponent->BindAction("Slam", IE_Pressed, this, &ATallyTankardPlayer::SlamTankardInput);
+	PlayerInputComponent->BindAction("Raise", IE_Pressed, this, &ATallyTankardPlayer::RaiseTankardInput);
 }
 
 void ATallyTankardPlayer::ParseGyroString() {
@@ -57,16 +57,8 @@ void ATallyTankardPlayer::ParseGyroString() {
 			numLines++;
 			linesIndex.Add(i);
 
-			//CalculateGravity(NewGyroString);
 			NewGyroString = "";
 
-
-
-			/*
-			if (j == 4) { //I only care about the most recent readings, so if there are more than 4, just break at 4
-				break;
-			}
-			*/
 
 			
 
@@ -122,6 +114,26 @@ void ATallyTankardPlayer::CalculateGravity(FString gyro) {
 	GravityArray.Add(GravitySum);
 }
 
+void ATallyTankardPlayer::CalculateRotation() {
+	int xFactor = 0, yFactor = 0, zFactor = 0;
+	if (abs(Gx) > 180) {
+		xFactor = Gx / 180;
+	}
+
+	if (abs(Gy) > 180) {
+		yFactor = Gy / 180;
+	}
+
+	if (abs(Gz) > 180) {
+		zFactor = Gz / 180;
+	}
+
+
+	Rotx = abs(Gx - (xFactor * 180));
+	Roty = abs(Gy - (yFactor * 180));
+	Rotz = abs(Gz - (zFactor * 180));
+}
+
 bool ATallyTankardPlayer::CheckRaise() {
 	bool heldStill = false;
 	if (GravityArray.Num() == 0) { //failsafe
@@ -169,14 +181,15 @@ bool ATallyTankardPlayer::CheckRaise() {
 	return false;
 }
 
-void ATallyTankardPlayer::SlamTankard() {
+bool ATallyTankardPlayer::SlamTankard() {
 	if (GameMode->inBeat) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Good!"));
-
+		return true;
 		Score += 1;
 	}
 	else {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Bad!"));
+		return false;
 	}
 }
 
@@ -192,14 +205,33 @@ bool ATallyTankardPlayer::RaiseTankard() {
 			return false;
 		}
 
-		
-
-		
-
-		
 	}
 	else {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Bad!"));
 		return false;
+	}
+}
+
+void ATallyTankardPlayer::RaiseTankardInput() {
+	if (GameMode->inBeat) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Good!"));
+		Score += 1;
+
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Bad!"));
+		
+	}
+}
+
+
+void ATallyTankardPlayer::SlamTankardInput() {
+	if (GameMode->inBeat) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Good!"));
+
+		Score += 1;
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Bad!"));
 	}
 }

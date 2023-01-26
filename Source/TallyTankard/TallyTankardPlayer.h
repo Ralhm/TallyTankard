@@ -27,10 +27,18 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION(BlueprintCallable)
-	void SlamTankard();
+	bool SlamTankard();
 
 	UFUNCTION(BlueprintCallable)
 	bool RaiseTankard();
+
+	//Debug functions for non-gyroscope based input
+	UFUNCTION(BlueprintCallable)
+	void RaiseTankardInput();
+
+	//Debug functions for non-gyroscope based input
+	UFUNCTION(BlueprintCallable)
+	void SlamTankardInput();
 
 	int Score;
 
@@ -52,6 +60,15 @@ public:
 		int Gz;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int Rotx;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int Roty;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int Rotz;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		int GravitySum;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -63,11 +80,17 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		TArray<int> GravityArray;
 
+	//Split up the string into parsable strings
 	UFUNCTION(BlueprintCallable)
 		void ParseGyroString();
 
+	//Turn said strings into actual data
 	UFUNCTION(BlueprintCallable)
 		void CalculateGravity(FString gyro);
+
+	//Calculate rotation from gravity
+	UFUNCTION(BlueprintCallable)
+		void CalculateRotation();
 
 	UFUNCTION(BlueprintCallable) //Check and compare the values in the GravityArray
 		bool CheckRaise();
