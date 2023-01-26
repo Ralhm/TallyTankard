@@ -71,6 +71,7 @@ void ATallyTankardPlayer::ParseGyroString() {
 	int j = 0;
 	for (int i = GyroArray.Num() - 1; i >= 0; i--) {
 		CalculateGravity(GyroArray[i]);
+		CalculateRotation(GyroArray[i]);
 		j++;
 		if (j == 4) {
 			break;
@@ -114,24 +115,52 @@ void ATallyTankardPlayer::CalculateGravity(FString gyro) {
 	GravityArray.Add(GravitySum);
 }
 
-void ATallyTankardPlayer::CalculateRotation() {
+void ATallyTankardPlayer::CalculateRotation(FString gyro) {
 	int xFactor = 0, yFactor = 0, zFactor = 0;
-	if (abs(Gx) > 180) {
-		xFactor = Gx / 180;
+	FString ls;
+	FString rsx;
+	FString rsy;
+	FString rsz;
+
+	gyro.Split("ax = ", &ls, &rsx);
+	rsx = rsx.TrimStart();
+	xAccel = UKismetStringLibrary::Conv_StringToInt(rsx);
+
+	rsx.Split("ay = ", &ls, &rsy);
+	rsy = rsy.TrimStart();
+	yAccel = UKismetStringLibrary::Conv_StringToInt(rsy);
+
+	rsy.Split("az = ", &ls, &rsz);
+	rsz = rsz.TrimStart();
+	zAccel = UKismetStringLibrary::Conv_StringToInt(rsz);
+
+
+	xAngle = atan(xAccel / (sqrt(FMath::Square(yAccel) + FMath::Square(zAccel))));
+	yAngle = atan(yAccel / (sqrt(FMath::Square(xAccel) + FMath::Square(zAccel))));
+	zAngle = atan(sqrt(FMath::Square(xAccel) + FMath::Square(yAccel)) / zAccel);
+
+	xAngle *= 180.00;   yAngle *= 180.00;   zAngle *= 180.00;
+	xAngle /= 3.141592; yAngle /= 3.141592; zAngle /= 3.141592;
+
+	/*
+		if (abs(tmpx) > 180) {
+		xFactor = tmpx / 180;
 	}
 
-	if (abs(Gy) > 180) {
-		yFactor = Gy / 180;
+	if (abs(tmpy) > 180) {
+		yFactor = tmpy / 180;
 	}
 
-	if (abs(Gz) > 180) {
-		zFactor = Gz / 180;
+	if (abs(tmpz) > 180) {
+		zFactor = tmpz / 180;
 	}
 
 
-	Rotx = abs(Gx - (xFactor * 180));
-	Roty = abs(Gy - (yFactor * 180));
-	Rotz = abs(Gz - (zFactor * 180));
+	Rotx = Gx - (xFactor * 180);
+	Roty = Gy - (yFactor * 180);
+	Rotz = Gz - (zFactor * 180);
+	*/
+
 }
 
 bool ATallyTankardPlayer::CheckRaise() {

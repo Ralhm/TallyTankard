@@ -48,6 +48,9 @@ public:
 	TArray<int> linesIndex;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		bool HitSlam;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<FString> GyroArray;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -60,13 +63,22 @@ public:
 		int Gz;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		int Rotx;
+		int xAccel;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		int Roty;
+		int yAccel;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		int Rotz;
+		int zAccel;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		double xAngle;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		double yAngle;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		double zAngle;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		int GravitySum;
@@ -90,7 +102,7 @@ public:
 
 	//Calculate rotation from gravity
 	UFUNCTION(BlueprintCallable)
-		void CalculateRotation();
+		void CalculateRotation(FString gyro);
 
 	UFUNCTION(BlueprintCallable) //Check and compare the values in the GravityArray
 		bool CheckRaise();
