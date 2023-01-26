@@ -185,9 +185,11 @@ bool ATallyTankardPlayer::RaiseTankard() {
 		if (CheckRaise()) {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Good!"));
 			Score += 1;
+			return true;
 		}
 		else {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange, TEXT("Miss!"));
+			return false;
 		}
 
 		
@@ -198,5 +200,6 @@ bool ATallyTankardPlayer::RaiseTankard() {
 	}
 	else {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Bad!"));
+		return false;
 	}
 }
