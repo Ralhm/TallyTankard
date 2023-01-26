@@ -27,10 +27,18 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION(BlueprintCallable)
-	void SlamTankard();
+	bool SlamTankard();
 
 	UFUNCTION(BlueprintCallable)
 	bool RaiseTankard();
+
+	//Debug functions for non-gyroscope based input
+	UFUNCTION(BlueprintCallable)
+	void RaiseTankardInput();
+
+	//Debug functions for non-gyroscope based input
+	UFUNCTION(BlueprintCallable)
+	void SlamTankardInput();
 
 	int Score;
 
@@ -38,6 +46,9 @@ public:
 
 	//Let this be the location of the end of each line on the string. Loop backwards from this to get the most recent gyro lines
 	TArray<int> linesIndex;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		bool HitSlam;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<FString> GyroArray;
@@ -52,6 +63,24 @@ public:
 		int Gz;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int xAccel;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int yAccel;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int zAccel;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		double xAngle;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		double yAngle;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		double zAngle;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		int GravitySum;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -63,11 +92,17 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		TArray<int> GravityArray;
 
+	//Split up the string into parsable strings
 	UFUNCTION(BlueprintCallable)
 		void ParseGyroString();
 
+	//Turn said strings into actual data
 	UFUNCTION(BlueprintCallable)
 		void CalculateGravity(FString gyro);
+
+	//Calculate rotation from gravity
+	UFUNCTION(BlueprintCallable)
+		void CalculateRotation(FString gyro);
 
 	UFUNCTION(BlueprintCallable) //Check and compare the values in the GravityArray
 		bool CheckRaise();

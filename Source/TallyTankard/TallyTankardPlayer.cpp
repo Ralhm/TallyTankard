@@ -38,8 +38,8 @@ void ATallyTankardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInput
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("Slam", IE_Pressed, this, &ATallyTankardPlayer::SlamTankard);
-	//PlayerInputComponent->BindAction("Raise", IE_Pressed, this, &ATallyTankardPlayer::RaiseTankard);
+	//PlayerInputComponent->BindAction("Slam", IE_Pressed, this, &ATallyTankardPlayer::SlamTankardInput);
+	PlayerInputComponent->BindAction("Raise", IE_Pressed, this, &ATallyTankardPlayer::RaiseTankardInput);
 }
 
 void ATallyTankardPlayer::ParseGyroString() {
@@ -57,16 +57,8 @@ void ATallyTankardPlayer::ParseGyroString() {
 			numLines++;
 			linesIndex.Add(i);
 
-			//CalculateGravity(NewGyroString);
 			NewGyroString = "";
 
-
-
-			/*
-			if (j == 4) { //I only care about the most recent readings, so if there are more than 4, just break at 4
-				break;
-			}
-			*/
 
 			
 
@@ -79,6 +71,7 @@ void ATallyTankardPlayer::ParseGyroString() {
 	int j = 0;
 	for (int i = GyroArray.Num() - 1; i >= 0; i--) {
 		CalculateGravity(GyroArray[i]);
+		CalculateRotation(GyroArray[i]);
 		j++;
 		if (j == 4) {
 			break;
@@ -120,6 +113,54 @@ void ATallyTankardPlayer::CalculateGravity(FString gyro) {
 	//GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Black, FString::Printf(TEXT("Gz: %d"), Gz));
 	GravitySum = abs(Gx) + abs(Gy) + abs(Gz);
 	GravityArray.Add(GravitySum);
+}
+
+void ATallyTankardPlayer::CalculateRotation(FString gyro) {
+	int xFactor = 0, yFactor = 0, zFactor = 0;
+	FString ls;
+	FString rsx;
+	FString rsy;
+	FString rsz;
+
+	gyro.Split("ax = ", &ls, &rsx);
+	rsx = rsx.TrimStart();
+	xAccel = UKismetStringLibrary::Conv_StringToInt(rsx);
+
+	rsx.Split("ay = ", &ls, &rsy);
+	rsy = rsy.TrimStart();
+	yAccel = UKismetStringLibrary::Conv_StringToInt(rsy);
+
+	rsy.Split("az = ", &ls, &rsz);
+	rsz = rsz.TrimStart();
+	zAccel = UKismetStringLibrary::Conv_StringToInt(rsz);
+
+
+	xAngle = atan(xAccel / (sqrt(FMath::Square(yAccel) + FMath::Square(zAccel))));
+	yAngle = atan(yAccel / (sqrt(FMath::Square(xAccel) + FMath::Square(zAccel))));
+	zAngle = atan(sqrt(FMath::Square(xAccel) + FMath::Square(yAccel)) / zAccel);
+
+	xAngle *= 180.00;   yAngle *= 180.00;   zAngle *= 180.00;
+	xAngle /= 3.141592; yAngle /= 3.141592; zAngle /= 3.141592;
+
+	/*
+		if (abs(tmpx) > 180) {
+		xFactor = tmpx / 180;
+	}
+
+	if (abs(tmpy) > 180) {
+		yFactor = tmpy / 180;
+	}
+
+	if (abs(tmpz) > 180) {
+		zFactor = tmpz / 180;
+	}
+
+
+	Rotx = Gx - (xFactor * 180);
+	Roty = Gy - (yFactor * 180);
+	Rotz = Gz - (zFactor * 180);
+	*/
+
 }
 
 bool ATallyTankardPlayer::CheckRaise() {
@@ -169,14 +210,15 @@ bool ATallyTankardPlayer::CheckRaise() {
 	return false;
 }
 
-void ATallyTankardPlayer::SlamTankard() {
+bool ATallyTankardPlayer::SlamTankard() {
 	if (GameMode->inBeat) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Good!"));
-
+		return true;
 		Score += 1;
 	}
 	else {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Bad!"));
+		return false;
 	}
 }
 
@@ -192,14 +234,33 @@ bool ATallyTankardPlayer::RaiseTankard() {
 			return false;
 		}
 
-		
-
-		
-
-		
 	}
 	else {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Bad!"));
 		return false;
+	}
+}
+
+void ATallyTankardPlayer::RaiseTankardInput() {
+	if (GameMode->inBeat) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Good!"));
+		Score += 1;
+
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Bad!"));
+		
+	}
+}
+
+
+void ATallyTankardPlayer::SlamTankardInput() {
+	if (GameMode->inBeat) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Good!"));
+
+		Score += 1;
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Bad!"));
 	}
 }
