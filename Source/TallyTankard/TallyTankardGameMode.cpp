@@ -24,3 +24,19 @@ void ATallyTankardGameMode::IncrementBeats() {
 	}
 
 }
+
+FString ATallyTankardGameMode::CurrentBeatCheck() {
+	if (DebugMapping == 0 || DebugMapping == 1) {
+		return "Slam";
+	}
+	else if (DebugMapping == 2) {
+		return "Drink";
+	}
+	else {
+		return "NULL";
+	}
+}
+
+FString ATallyTankardGameMode::GetCurrentBeatMap(int index) {
+	return BeatMap[index];
+}
