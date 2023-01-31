@@ -40,3 +40,4 @@ FString ATallyTankardGameMode::CurrentBeatCheck() {
 FString ATallyTankardGameMode::GetCurrentBeatMap(int index) {
 	return BeatMap[index];
 }
+

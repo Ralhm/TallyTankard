@@ -67,7 +67,7 @@ void ATallyTankardPlayer::ParseGyroString() {
 		CalculateGravity(GyroArray[i]); //Calculate gravity and rotation for each line of the array
 		CalculateRotation(GyroArray[i]);
 		j++;
-		if (j == 4) {
+		if (j == numLinestoCompare) {
 			break;
 		}
 	}
