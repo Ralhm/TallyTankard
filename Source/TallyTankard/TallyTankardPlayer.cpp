@@ -6,8 +6,10 @@
 #include "Kismet/KismetStringLibrary.h"
 
 
-//Make an array of ints, these ints are the sums of the absolute values of the gravitational x y and zforces experienced by the thing
-//
+//MAPPING NOTES
+//To map the beats to certain actions, make an array of strings to represent each beat (Slam, Drink, Raise)
+//For every beat, check the string and see if the input matches the desired input
+//Compare the beat num with the string index to get the desired beat input
 
 // Sets default values
 ATallyTankardPlayer::ATallyTankardPlayer()
@@ -43,7 +45,6 @@ void ATallyTankardPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInput
 }
 
 void ATallyTankardPlayer::ParseGyroString() {
-	//NewGyroString.TrimStart();
 	GravityArray.Empty();
 	GyroArray.Empty();
 	numLines = 0;
@@ -55,33 +56,21 @@ void ATallyTankardPlayer::ParseGyroString() {
 			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Hit a newline!"));
 			GyroArray.Add(NewGyroString);
 			numLines++;
-			linesIndex.Add(i);
 
 			NewGyroString = "";
-
-
-			
-
-			
+	
 		}
 	}
 	
-	//CalculateGravity(GyroArray[0]);
-	
 	int j = 0;
 	for (int i = GyroArray.Num() - 1; i >= 0; i--) {
-		CalculateGravity(GyroArray[i]);
+		CalculateGravity(GyroArray[i]); //Calculate gravity and rotation for each line of the array
 		CalculateRotation(GyroArray[i]);
 		j++;
 		if (j == 4) {
 			break;
 		}
 	}
-	
-
-	
-
-
 
 }
 
@@ -106,11 +95,6 @@ void ATallyTankardPlayer::CalculateGravity(FString gyro) {
 	rsz = rsz.TrimStart();
 	Gz = UKismetStringLibrary::Conv_StringToInt(rsz);
 
-
-
-	//GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Black, FString::Printf(TEXT("Gx: %d"), Gx));
-	//GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Black, FString::Printf(TEXT("Gy: %d"), Gy));
-	//GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Black, FString::Printf(TEXT("Gz: %d"), Gz));
 	GravitySum = abs(Gx) + abs(Gy) + abs(Gz);
 	GravityArray.Add(GravitySum);
 }
@@ -142,24 +126,6 @@ void ATallyTankardPlayer::CalculateRotation(FString gyro) {
 	xAngle *= 180.00;   yAngle *= 180.00;   zAngle *= 180.00;
 	xAngle /= 3.141592; yAngle /= 3.141592; zAngle /= 3.141592;
 
-	/*
-		if (abs(tmpx) > 180) {
-		xFactor = tmpx / 180;
-	}
-
-	if (abs(tmpy) > 180) {
-		yFactor = tmpy / 180;
-	}
-
-	if (abs(tmpz) > 180) {
-		zFactor = tmpz / 180;
-	}
-
-
-	Rotx = Gx - (xFactor * 180);
-	Roty = Gy - (yFactor * 180);
-	Rotz = Gz - (zFactor * 180);
-	*/
 
 }
 
@@ -170,27 +136,27 @@ bool ATallyTankardPlayer::CheckRaise() {
 		return false;
 	}
 	else if (GravityArray.Num() == 1) { //failsafe in case we only have one queued up
-		if (GravityArray[0] > 1500) {
+		if (GravityArray[0] > ForceThreshold) {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange, TEXT("Hit Failsafe 1!"));
 			return true;
 		}
 	}
 	else if (GravityArray.Num() == 2) { //failsafe in case we only have 2 queued up
-		if (GravityArray[0] > 1500 || GravityArray[1] > 1500) {
+		if (GravityArray[0] > ForceThreshold || GravityArray[1] > ForceThreshold) {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Hit Failsafe 2!"));
 			return true;
 		}
 	}
 	else {
 		for (int i = 1; i < GravityArray.Num() - 1; i++) { //Check if the player has held the tankard still in recent seconds
-			if (GravityArray[i] < 2000) {
+			if (GravityArray[i] < ForceThreshold) {
 				heldStill = true;
 				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Turquoise, TEXT("Held Still Found!"));
 				break;
 			}
 		}
 		if (heldStill) {
-			if (GravityArray[0] > 1500 || GravityArray[1] > 1500) { //if 2 of the most recent checks are high then return true 
+			if (GravityArray[0] > ForceThreshold || GravityArray[1] > ForceThreshold) { //if 2 of the most recent checks are high then return true 
 				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Raise Successfull!"));
 				return true;
 			}
@@ -262,5 +228,29 @@ void ATallyTankardPlayer::SlamTankardInput() {
 	}
 	else {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Bad!"));
+	}
+}
+
+void ATallyTankardPlayer::IncreaseDrunkenness() {
+	if (Drunkenness < MaxDrunkenness) {
+		Drunkenness++;
+	}
+}
+
+void ATallyTankardPlayer::IncreaseCamaraderie() {
+	if (Camaraderie < MaxCamaraderie) {
+		Camaraderie++;
+	}
+}
+
+void ATallyTankardPlayer::DecreaseDrunkenness() {
+	if (Drunkenness > 0) {
+		Drunkenness--;
+	}
+}
+
+void ATallyTankardPlayer::DecreaseCamaraderie() {
+	if (Camaraderie > 0) {
+		Camaraderie--;
 	}
 }

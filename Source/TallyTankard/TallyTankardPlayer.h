@@ -40,57 +40,79 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SlamTankardInput();
 
-	int Score;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties") //Should be high but not too high, like somewhere between 2000 and 6000
+		float ForceThreshold;
 
-	int numLines;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties") //Max force player should be allowed to exert to register as 'holding still', should be less than ForceThreshold
+		float HoldStillThreshold;
 
-	//Let this be the location of the end of each line on the string. Loop backwards from this to get the most recent gyro lines
-	TArray<int> linesIndex;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties") //What's the angle the tankard should be at to register a drink? Should be between 0 and 1
+		float DrinkThreshold;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties")
+		float MaxDrunkenness;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Properties")
+		float MaxCamaraderie;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Stats")
+		int Drunkenness;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Stats")
+		int Camaraderie;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Stats")
+		int Score;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")
 		bool HitSlam;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")
+		int numLinestoCompare;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")
 	TArray<FString> GyroArray;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")
 		int Gx;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")
 		int Gy;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")
 		int Gz;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")
 		int xAccel;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")
 		int yAccel;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")
 		int zAccel;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")
 		double xAngle;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")
 		double yAngle;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")
 		double zAngle;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")
 		int GravitySum;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")
 		FString GyroString;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")
 		FString NewGyroString;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")
 		TArray<int> GravityArray;
+
+	int numLines;
 
 	//Split up the string into parsable strings
 	UFUNCTION(BlueprintCallable)
@@ -106,6 +128,18 @@ public:
 
 	UFUNCTION(BlueprintCallable) //Check and compare the values in the GravityArray
 		bool CheckRaise();
+
+	UFUNCTION(BlueprintCallable)
+		void IncreaseDrunkenness();
+
+	UFUNCTION(BlueprintCallable)
+		void IncreaseCamaraderie();
+
+	UFUNCTION(BlueprintCallable)
+		void DecreaseDrunkenness();
+
+	UFUNCTION(BlueprintCallable)
+		void DecreaseCamaraderie();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		class ATallyTankardGameMode* GameMode;
