@@ -96,6 +96,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void IncrementBeats();
 
+	UFUNCTION(BlueprintCallable)
+		FString CurrentBeatCheck();
+
+	UFUNCTION(BlueprintCallable)
+		FString GetCurrentBeatMap(int index);
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		FString GyroString;
 
