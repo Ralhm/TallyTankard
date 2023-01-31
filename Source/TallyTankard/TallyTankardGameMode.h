@@ -55,6 +55,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TArray<class USongComponent*> SongStorage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<FString> BeatMap;
 	
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -78,30 +81,29 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		float SecondsPerTick;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly) //How many beats total in the song
+	int TotalBeats;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite) //Current Beat Num
 	int NumBeats;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool inBeat;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite) //Reset this every 3 beats, slam on beats 0 and 1, drink on beat 2 DEBUG
+	int DebugMapping;
+
+	UFUNCTION(BlueprintCallable)
+		void IncrementBeats();
+
+	UFUNCTION(BlueprintCallable)
+		FString CurrentBeatCheck();
+
+	UFUNCTION(BlueprintCallable)
+		FString GetCurrentBeatMap(int index);
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		FString GyroString;
 
-	UPROPERTY(BlueprintReadWrite)
-		FCountDownType TimeManager;
-
-	UFUNCTION()
-		void AdvanceBeatTimer();
-
-	UFUNCTION()
-		void AdvanceBeatStartTimer();
-
-	UFUNCTION()
-		void AdvanceBeatEndTimer();
-
-	UFUNCTION(BlueprintCallable)
-		void BeginCountDown(FName Type);
-
-	UFUNCTION(BlueprintCallable)
-		void ParseGyroString();
 
 };
