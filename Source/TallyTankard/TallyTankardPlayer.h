@@ -67,7 +67,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")
 		bool HitSlam;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Physics")
 		int numLinestoCompare;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Physics")

@@ -81,7 +81,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		float SecondsPerTick;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly) //How many beats total in the song
+	UPROPERTY(EditAnywhere, BlueprintReadOnly) //How many beats total in the song
 	int TotalBeats;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite) //Current Beat Num
@@ -104,6 +104,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		FString GyroString;
+
 
 
 };
