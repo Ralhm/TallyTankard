@@ -1,7 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "TallyTankardGameMode.h"
-#include "TallyTankardCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 #include "SongComponent.h"
 
